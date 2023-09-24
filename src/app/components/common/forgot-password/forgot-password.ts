@@ -56,6 +56,7 @@ export class ForgotPassword implements OnInit, OnDestroy {
   }
 
   forgotPassword() {
+    const forgotPasswordHTML = <HTMLElement>document.getElementById('forgot-password');
     const userData = {
       email: this.email
     }
@@ -73,6 +74,7 @@ export class ForgotPassword implements OnInit, OnDestroy {
           // Map and process the response as needed
           const response = JSON.parse(JSON.stringify(res));
           this.apiResponse = response.message;
+          forgotPasswordHTML.style.display = 'block';
         }
     })
   }

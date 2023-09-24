@@ -1,8 +1,9 @@
 import { Component, ElementRef, OnDestroy, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { Router }    from '@angular/router';
-import { NgForm }    from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import appSettings from '../../../config/app-settings';
 import { Title } from '@angular/platform-browser';
+import { AuthenticationService } from '../../../auth/authentication.service';
 
 @Component({
 	selector: 'change-password',
@@ -16,19 +17,27 @@ export class ChangePassword implements OnInit, OnDestroy {
   email: any;
   password: any;
   confirmPassword : any;
+  apiResponse: any;
+  code: any;
+
   isInvalidPassword = false;
   isInvalidConfirmPassword = false;
   isPasswordMatch = false;
+
   isDisabled: boolean;
 
   ngOnInit(): void {
     this.titleService.setTitle('JKteches | Change Password Page');
   }
 
-  constructor(private router: Router, private renderer: Renderer2, private titleService: Title) {
+  constructor(private router: Router, private route: ActivatedRoute, private renderer: Renderer2, private titleService: Title, private auth: AuthenticationService) {
     this.appSettings.appEmpty = true;
     this.isDisabled = true;
     this.renderer.addClass(document.body, 'bg-white');
+    this.route.queryParams.subscribe(params => {
+      this.email = params['username'];
+      this.code = params['code'];
+    });
   }
 
   ngOnDestroy() {
@@ -86,11 +95,11 @@ export class ChangePassword implements OnInit, OnDestroy {
     if(field == 'confirmPassword' && this.password !== this.confirmPassword){
       // this.passwordMatchErr.nativeElement.style['display']= "block"; 
       this.isPasswordMatch = false;
-      this.isDisabled = false;
+      this.isDisabled = true;
     } else {
       // this.passwordMatchErr.nativeElement.style['display']= "none"; 
       this.isPasswordMatch = true;
-      this.isDisabled = true;
+      this.isDisabled = false;
     }
 	}
   
@@ -101,5 +110,35 @@ export class ChangePassword implements OnInit, OnDestroy {
 
   togglePasswordVisibility (fieldName : string) {
     this.showPassword[fieldName] = !this.showPassword[fieldName]
+  }
+
+  changePassword() {
+    const changePasswordHTML = <HTMLElement>document.getElementById('change-password');
+    const userData = {
+      email: this.email,
+      password: this.password
+    }
+    this.auth.confirmPassword(userData, this.code)
+      // .pipe(first())
+      .subscribe({
+        error: (e) => {
+          const response = JSON.parse(JSON.stringify(e));
+          this.apiResponse = response.message;
+          this.router.navigate(['/']);
+        },
+        complete: () => {
+          console.log("Email successfully verify.");
+        },
+        next: (res) => {
+          
+          // Map and process the response as needed
+          const response = JSON.parse(JSON.stringify(res));
+          this.apiResponse = response.message;
+          changePasswordHTML.style.display = 'block';
+          setTimeout(() => {
+            this.router.navigate(['/']);
+          }, 3000)
+        }
+    })
   }
 }

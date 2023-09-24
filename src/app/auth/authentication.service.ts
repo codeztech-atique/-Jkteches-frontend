@@ -184,6 +184,18 @@ export class AuthenticationService implements OnInit  {
       }));
     }
 
+    confirmPassword(user, code) {
+      return this.http.post<any>(`${this.uri}/auth/confirmpassword?code=`+code, user)
+      .pipe(map(auser => {
+          // login successful if there's a jwt token in the response
+          if (auser) {
+            // store user details and jwt token in local storage to keep user logged in between page refreshes
+            console.log("Password changed successfully !!!")
+          }
+          return auser;
+      }));
+    }
+
     verifyEmail(user) {
       return this.http.post<any>(`${this.uri}/auth/verifyemail`, user)
       .pipe(map(auser => {

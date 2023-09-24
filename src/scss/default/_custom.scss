@@ -121,12 +121,20 @@ span.input-group-text.input-group-width-xl {
 }
 
 
-#login-error, #signup-error {
+#login-error, #signup-error, #change-password {
     display: none;
     width: 100%;
     margin-top: 0.25rem;
     font-size: .7125rem;
     color: #ff5b57;
+}
+
+#forgot-password, #change-password {
+    display: none;
+    width: 100%;
+    margin-top: 0.25rem;
+    font-size: .7125rem;
+    color: white;
 }
 
 /* Tooltip container */
