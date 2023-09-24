@@ -1,0 +1,81 @@
+<!-- BEGIN #header -->
+<div id="header" class="app-header" [ngClass]="{ 'app-header-inverse': this.appSettings.appHeaderInverse}">
+	<!-- BEGIN navbar-header -->
+
+	
+	<div class="navbar-header">
+		<button type="button" class="navbar-mobile-toggler" *ngIf="this.appSidebarTwo"
+			(click)="toggleAppSidebarEndMobile()">
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+		</button>
+		<a href="/" class="navbar-brand">
+			<!-- <span class="navbar-logo"></span>  -->
+			<img src="{{logo}}" alt="Jkteches" class="img-rounded img-chat company-logo">
+			<span class="company-title"><b>Jk</b> teches</span>
+		</a>
+		<button type="button" class="navbar-mobile-toggler" (click)="toggleAppTopMenuMobile()"
+			*ngIf="this.appSettings.appTopMenu && !this.appSettings.appSidebarNone">
+			<span class="fa-stack fa-lg text-inverse">
+				<i class="far fa-square fa-stack-2x"></i>
+				<i class="fa fa-cog fa-stack-1x"></i>
+			</span>
+		</button>
+		<button type="button" class="navbar-mobile-toggler" (click)="toggleAppHeaderMegaMenuMobile()"
+			*ngIf="this.appSettings.appHeaderMegaMenu">
+			<span class="fa-stack fa-lg text-inverse">
+				<i class="far fa-square fa-stack-2x"></i>
+				<i class="fa fa-cog fa-stack-1x"></i>
+			</span>
+		</button>
+		<button type="button" class="navbar-mobile-toggler" (click)="toggleAppSidebarMobile()"
+			*ngIf="!this.appSettings.appSidebarNone">
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+		</button>
+		<button type="button" class="navbar-mobile-toggler" (click)="toggleAppTopMenuMobile()"
+			*ngIf="this.appSettings.appTopMenu && this.appSettings.appSidebarNone">
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+		</button>
+	</div>
+	<!-- END navbar-header -->
+
+	
+	<!-- BEGIN nav -->
+	<div class="navbar-nav">
+		
+		<div class="navbar-item navbar-user dropdown">
+			<a href="javascript:;" class="navbar-link dropdown-toggle d-flex align-items-center"
+				data-bs-toggle="dropdown">
+				<img src="{{userProfilePictureURL}}" alt="" />
+				<span>
+					<span *ngIf="this.currentUser['custom:role'] == 'customer'" class="d-none d-md-inline">{{this.currentUser['custom:name']}}</span>
+					<b class="caret"></b>
+				</span>
+			</a>
+			<div class="dropdown-menu dropdown-menu-end me-1">
+				<a routerLink="/edit-profile" class="dropdown-item">Edit Profile</a>
+				<!-- <a href="javascript:;" class="dropdown-item d-flex align-items-center">
+					Inbox
+					<span class="badge bg-danger rounded-pill ms-auto pb-4px">2</span>
+				</a> -->
+				<!-- <a href="javascript:;" class="dropdown-item">Calendar</a> -->
+				<!-- <a href="javascript:;" class="dropdown-item">Setting</a> -->
+				<div class="dropdown-divider"></div>
+				<a href="javascript:;" class="dropdown-item" (click)="logout()">Log Out</a>
+			</div>
+		</div>
+		<div class="navbar-divider d-none d-md-block" *ngIf="this.appSidebarTwo"></div>
+		<div class="navbar-item d-none d-md-block" *ngIf="this.appSidebarTwo">
+			<a href="javascript:;" (click)="toggleAppSidebarEnd()" class="navbar-link icon">
+				<i class="fa fa-th"></i>
+			</a>
+		</div>
+	</div>
+	<!-- END nav -->
+</div>
+<!-- END #header -->

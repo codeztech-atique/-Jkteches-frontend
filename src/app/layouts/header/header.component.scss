@@ -1,0 +1,16 @@
+.dropdown-menu.media-list {
+   width: 400px !important;
+}
+
+.dropdown-menu.media-list.dropdown-menu-end {
+   max-height: 28rem;
+   overflow-y: auto;
+}
+
+.company-title {
+   margin-left: 35%;
+}
+
+.text-theam-color {
+   color: var(--app-theme);
+}
