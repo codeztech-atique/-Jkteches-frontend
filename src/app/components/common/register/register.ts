@@ -53,6 +53,7 @@ export class RegisterPage implements OnInit, OnDestroy {
       if(this.socialUser.provider === "GOOGLE"){
         const token = {
           "token" : this.socialUser.idToken,
+          "deviceType": "web"
         }
         
         this.auth.signUpWithGoogle(token)
@@ -190,7 +191,8 @@ export class RegisterPage implements OnInit, OnDestroy {
         "password": this.password,
         "role": "customer",
         "name": this.username,
-        "source": "cognito"
+        "source": "cognito",
+        "deviceType": "web"
       }
       
       this.confirmButtonText = "Please wait";

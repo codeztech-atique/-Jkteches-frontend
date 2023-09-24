@@ -55,6 +55,7 @@ export class LoginPage implements OnInit, OnDestroy {
       if(this.socialUserLogin.provider === "GOOGLE"){
         const token = {
           "token" : this.socialUserLogin.idToken,
+          "deviceType": "web"
         }
         
         this.auth.signInWithGoogle(token)
@@ -63,6 +64,12 @@ export class LoginPage implements OnInit, OnDestroy {
           error: (error) => {
             //  we are getting user already exist error here, handle it later
             console.log('Error in google Login !!!', error);
+            this.isEnabledSubmit = false;
+            const loginErr = <HTMLElement>document.getElementById('login-error');
+            loginErr.style.display = 'block';
+            this.showLoader = false;
+            this.isEnabledSubmit = false;
+            this.router.navigate(['/']);
           },
           complete: () => {
             this.router.navigate(['/dashboard'])
@@ -74,7 +81,8 @@ export class LoginPage implements OnInit, OnDestroy {
           "token": this.socialUserLogin.authToken,
           "email": this.socialUserLogin.email,
           "name": this.socialUserLogin.name,
-          "id": this.socialUserLogin.id
+          "id": this.socialUserLogin.id,
+          "deviceType": 'web'
         }
 
         this.auth.signInWithFB(token)
@@ -130,7 +138,6 @@ export class LoginPage implements OnInit, OnDestroy {
       // .pipe(first())
       .subscribe({
         error: (e) => {
-          console.log("I am error signin")
           this.isEnabledSubmit = false;
           loginErr.style.display = 'block';
           this.showLoader = false;

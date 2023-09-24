@@ -1,20 +1,17 @@
 import { Component, OnDestroy, ViewEncapsulation,ViewChild, ElementRef, OnInit } from '@angular/core';
-import { CONSTANTS } from '../../config/constants';
 import { SharedservicesService }  from '../../services/sharedservices.service';
-import { CommonService }    from '../../services/common.service';
 import { Router } from '@angular/router';
 import appSettings from '../../config/app-settings';
 import Swal from 'sweetalert2';
 import 'lity';
+import { AuthenticationService } from '../../auth/authentication.service';
+
 
 @Component({
 	selector: 'edit-profile',
 	templateUrl: './edit-profile.component.html',
 	encapsulation: ViewEncapsulation.None,
 	styleUrls: ['./edit-profile.component.scss'],
-	host: {
-    '(document:click)': 'closeDropdownOnclickOutside($event)',
-  }
 })
 
 export class EditProfile implements OnDestroy,OnInit {
@@ -37,27 +34,22 @@ export class EditProfile implements OnDestroy,OnInit {
 	userCountryFlag: any;
 	userState: any;
 	userCity: any;
-  userBirthdate: any;
-	userBirthdateDay: any;
-	userBirthdateMonth: any;
-	userBirthdateYear: any;
+    userBirthdate: any;
+	userBirthdateDay: number = null;
+	userBirthdateMonth: number = null;
+	userBirthdateYear: number = null;
 
 	// Define boolean variable
-	showEmoji: boolean;
-	showMobileNumber: boolean;
-	showHomeNumber: boolean;
-	showOfficeNumber: boolean;
-	showAboutMe: boolean;
-	showCountry: boolean;
-	showState: boolean;
+	
 	flag: boolean;
 	currentTab:String= 'about';
 	newPasswordValue : string = '';
 	confirmPasswordValue : string = '';
 	newPasswordLengthError = false;
 	PasswordMatchError = false;
+	showAboutMe = false;
 
-	constructor(private shared: SharedservicesService, private commonService: CommonService, private router: Router) {
+	constructor(private shared: SharedservicesService, private auth: AuthenticationService, private router: Router) {
 		this.appSettings.appContentClass = 'p-0';
 		this.userInfo = JSON.parse(localStorage.getItem('currentUser'));
 		this.userProfilePictureURL = this.userInfo['custom:profileurl'];
@@ -67,40 +59,9 @@ export class EditProfile implements OnDestroy,OnInit {
 			this.userName = this.userInfo['custom:name'];
 		}
 
-		if(this.userInfo['custom:mood']) {
-			this.showEmojiIcon = this.userInfo['custom:mood'];
-		}
-
-		if(this.userInfo['custom:mobile']) {
-			this.userMobileNo = this.userInfo['custom:mobile'];
-			this.showMobileNumber = false;
-		}
-
-		if(this.userInfo['custom:home']) {
-			this.userHomeNo = this.userInfo['custom:home'];
-			this.showHomeNumber = false;
-		}
-
-		if(this.userInfo['custom:office']) {
-			this.userOfficeNo = this.userInfo['custom:office'];
-			this.showOfficeNumber = false;
-		}
-
 		if(this.userInfo['custom:description']) {
 			this.userAboutMe = this.userInfo['custom:description'];
 			this.showAboutMe = false;
-		}
-
-		if(this.userInfo['custom:country']) {
-			this.userCountry = this.userInfo['custom:country'];
-		}
-
-		if(this.userInfo['custom:state']) {
-			this.userState = this.userInfo['custom:state'];
-		}
-
-		if(this.userInfo['custom:city']) {
-			this.userCity = this.userInfo['custom:city'];
 		}
 
 		if(this.userInfo['custom:birthdate']) {
@@ -111,7 +72,6 @@ export class EditProfile implements OnDestroy,OnInit {
 			this.userBirthdateYear = userBirthDate[2];
 		}
 
-		this.showCountry = false;
 		this.flag = false;
 		this.keepPreviousCountryRecord = "";
 
@@ -124,51 +84,8 @@ export class EditProfile implements OnDestroy,OnInit {
 		this.appSettings.appContentClass = '';
 	}
 
-	selectMood() {
-		if(this.showEmoji) {
-			this.showEmoji = false;
-		} else {
-			this.showEmoji = true;
-		}
-	}
-
-	addEmoji(event) {
-	   this.showEmoji = false;	
-       this.showEmojiIcon = event.emoji.native;
-	}
-
-	addMobileNumber() {
-		if(this.showMobileNumber) {
-			this.showMobileNumber = false;
-		} else {
-			this.showMobileNumber = true;
-		}
-	}
-
-	addHomeNumber() {
-		if(this.showHomeNumber) {
-			this.showHomeNumber = false;
-		} else {
-			this.showHomeNumber = true;
-		}
-	}
-
-	addOfficeNumber() {
-		if(this.showOfficeNumber) {
-			this.showOfficeNumber = false;
-		} else {
-			this.showOfficeNumber = true;
-		}
-	}
-
-	addAboutMe() {
-		if(this.showAboutMe) {
-			this.showAboutMe = false;
-		} else {
-			this.showAboutMe = true;
-		}
-	}
-
+	
+	
 	onChangeUserBio(data) {
 	   this.userAboutMe = data;
 	}
@@ -177,91 +94,44 @@ export class EditProfile implements OnDestroy,OnInit {
 		this.userCity = data;
 	}
 
-	showDropDownCountry() {
-		if(!this.flag) {
-			if(this.showCountry) {
-				this.showCountry = false;
-			} else {
-				this.showCountry = true;
-			}
-		}
-	}
 
-	showDropDownState() {
-      if(this.showState) {
-		this.showState = false;
-	  } else {
-		this.showState = true;
-	  }
-	}
+	
+	onInputDay(day: string) {
+		// Convert the input to a number
+		const parsedDay = parseInt(day, 10);
 
-	keepOpenDropDownCountry() {
-		this.showCountry = true;
-		this.flag = true;
-	}
-
-	searchCountryName(countryName) {
-		if(this.keepPreviousCountryRecord.length < countryName.length) {
-			this.keepPreviousCountryRecord = countryName;
+		// Check if the input is a valid day (e.g., between 1 and 31)
+		if (!isNaN(parsedDay) && parsedDay >= 1 && parsedDay <= 31) {
+		  this.userBirthdateDay = parsedDay;
 		} else {
-			this.listUserCountry = this.listCountry;
-		}
-		this.listUserCountry = this.listUserCountry.filter((data) => { 
-			data.name = data.name.toLowerCase();
-			countryName = countryName.toLowerCase();
-			return data.name.includes(countryName)
-		});
-		if(countryName == "") {
-			this.listUserCountry = this.listCountry;
+		  // If the input is invalid or out of range, reset the input to the original value
+		  this.userBirthdateDay = null;
 		}
 	}
 
-	chooseCountry(country) {
-		this.userCountry = country.name;
-		if(country.states.length == 0) {
-			this.userState = "Others";
-		} else {
-			this.userState = "";
-		}
-		country.states.push(
-			{
-                "name": "Others",
-                "type": null
-            }
-		);
-		this.listUserState = country.states;
-		this.userCountryFlag = country.emoji;
-		this.flag = false;
-		this.listUserCountry = this.listCountry;
-	}
+	onInputMonth(month) {
+		// Convert the input to a number
+		const parsedMonth = parseInt(month, 10);
 
-	onChangeBirthday(data) {
-		if(data < 1) {
-			this.userBirthdateDay = 1;
-		} else if(data >= 31) {
-			this.userBirthdateDay = 31;
+		// Check if the input is a valid month (e.g., between 1 and 12)
+		if (!isNaN(parsedMonth) && parsedMonth >= 1 && parsedMonth <= 12) {
+		  this.userBirthdateMonth = parsedMonth;
 		} else {
-			this.userBirthdateDay = data;
+		  // If the input is invalid or out of range, reset the input to the original value
+		  this.userBirthdateMonth = null;
 		}
 	}
 
-	onChangeBirthMonth(data) {
-		if(data < 1) {
-			this.userBirthdateMonth = 1;
-		} else if(data >= 12) {
-			this.userBirthdateMonth = 12;
-		} else {
-			this.userBirthdateMonth = data;
-		}
-	}
+	onInputYear(year) {
+		// Convert the input to a number
+		const parsedYear = parseInt(year, 10);
 
-	onChangeBirthYear(data) {
-		if(data < 1) {
-			this.userBirthdateYear = 1940;
-		} else if(data < 1940) {
-			this.userBirthdateYear = 1940;
+		// Check if the input is a valid year (e.g., between 1950 and a reasonable upper limit)
+		if (!isNaN(parsedYear) && parsedYear >= 1950) {
+		  this.userBirthdateYear = parsedYear;
 		} else {
-			this.userBirthdateYear = data;
+		  // If the input is invalid or out of range, reset the input to the original value
+		  this.userBirthdateYear = null;
 		}
 	}
 
@@ -301,22 +171,67 @@ export class EditProfile implements OnDestroy,OnInit {
 		})
 	}
 
+	addAboutMe() {
+		if(this.showAboutMe) {
+			this.showAboutMe = false;
+		} else {
+			this.showAboutMe = true;
+		}
+	}
+
+	updateProfile() {
+		const swalWithBootstrapButtons = Swal.mixin({
+			customClass: {
+			  confirmButton: 'btn btn-success btn-width-5',
+			  cancelButton: 'btn btn-white btn-width-5 mr-left-5'
+			},
+			buttonsStyling: false
+		});
+
+		this.userBirthdate = this.userBirthdateDay+"/"+this.userBirthdateMonth+"/"+this.userBirthdateYear;
+		
+		const data = {
+			email: this.userInfo['email'],
+			description: this.userAboutMe,
+			dob: this.userBirthdate, 
+		}
+
+		this.shared.updateProfile(data).subscribe({
+			next: async(response) => {
+			  const responseData = JSON.parse(JSON.stringify(response));
+
+              this.userInfo['custom:about'] = this.userAboutMe;
+			  this.userInfo['custom:birthdate'] = this.userBirthdate;
+			  
+			  localStorage.setItem('currentUser', JSON.stringify(this.userInfo));
+			 
+			  swalWithBootstrapButtons.fire(
+				'Success!',
+				'You successfully updated profile details.',
+				'success'
+			  )
+
+			  this.router.navigate([`/dashboard`]);
+			},
+			error: (error) => {
+				console.log(error);
+				swalWithBootstrapButtons.fire({
+					title: 'Error !',
+					text: 'Update failed',
+					icon: 'error',
+					showConfirmButton: false,
+					showCancelButton: true,
+					allowOutsideClick: false,
+					cancelButtonText: 'Cancel'
+				})
+			}
+		});
+	}
+
 	cancelUpdate() {
 		this.router.navigate([`/dashboard`]);
 	}
 
-	@ViewChild('selectStateElement') selectStateElement: ElementRef;
-	@ViewChild('selectCountryElement') selectCountryElement: ElementRef;
-	
-	closeDropdownOnclickOutside(event: MouseEvent) {
-    if (!this.selectCountryElement?.nativeElement.contains(event.target as Node)) {
-      this.showCountry = false;
-    }
-
-    if (!this.selectStateElement?.nativeElement.contains(event.target as Node)) {
-      this.showState = false;
-    }
-  }
 
 	changeTab(tab:string){
 		this.currentTab=tab;
@@ -345,18 +260,18 @@ export class EditProfile implements OnDestroy,OnInit {
 
 	togglePasswordVisibility(fieldName: string): void {
       this.showPassword[fieldName] = !this.showPassword[fieldName]
-  }
+  	}
 
 	changePasswordSubmit() {
-		if(!this.newPasswordLengthError && !this.PasswordMatchError ){
-			const swalWithBootstrapButtons = Swal.mixin({
-				customClass: {
-				confirmButton: 'btn btn-success btn-width-5',
-				cancelButton: 'btn btn-white btn-width-5 mr-left-5'
-				},
-				buttonsStyling: false
-			});
-		
+		const swalWithBootstrapButtons = Swal.mixin({
+			customClass: {
+			confirmButton: 'btn btn-success btn-width-5',
+			cancelButton: 'btn btn-white btn-width-5 mr-left-5'
+			},
+			buttonsStyling: false
+		});
+
+		if(!this.newPasswordLengthError && !this.PasswordMatchError && this.newPasswordValue && this.confirmPasswordValue){
 			swalWithBootstrapButtons.fire({
 				title: 'Are you sure ?',
 				text: 'You wanted to change the password',
@@ -365,20 +280,45 @@ export class EditProfile implements OnDestroy,OnInit {
 				showCancelButton: true,
 				allowOutsideClick: false,
 				cancelButtonText: 'Cancel'
-			}).then( 
-				()=>{
-					swalWithBootstrapButtons.fire({
-						title: 'Password has ben updated successfully',
-						// text: 'You wanted to update the details',
-						icon: 'success',
-						showConfirmButton: true,
-						// showCancelButton: true,
-						allowOutsideClick: false,
-						cancelButtonText: 'Cancel'
-					})
+			}).then((res) => {
+					if (res.value) {
+						swalWithBootstrapButtons.fire(
+							'Success!',
+							'Password has been updated successfully.',
+							'success'
+						)
+						this.updatePassword();
+				    }
 				}
 			)
+		} else {
+			swalWithBootstrapButtons.fire({
+				title: 'Error !',
+				text: "Password and confirm password does not match !!!",
+				icon: 'error',
+				showConfirmButton: false,
+				showCancelButton: true,
+				allowOutsideClick: false,
+				cancelButtonText: 'Cancel'
+			})
 		}
   }
-	// Change Password functionality ends here
+
+  updatePassword() {
+	const data = {
+		email: this.userInfo['email'],
+		password: this.newPasswordValue,
+		newpassword: this.confirmPasswordValue
+	}
+	this.auth.changePassword(data)
+      // .pipe(first())
+      .subscribe({
+        error: (e) => {
+          console.log("Error is password update !!!")
+        },
+        complete: () => {
+          console.log("Password successfully changed !!!")
+        }
+    })
+  }
 }

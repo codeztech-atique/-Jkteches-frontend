@@ -18,6 +18,30 @@
 					<div class="menu-profile-image">
 						<img src="{{userProfilePictureURL}}" alt="">
 					</div>
+          
+          <!-- For customer -->
+					<div *ngIf="this.currentUser['custom:role'] == 'customer'" class="menu-profile-info">
+						<div class="d-flex align-items-center">
+							<div class="flex-grow-1">
+								{{this.currentUser['custom:name']}}
+							</div>
+							<div class="menu-caret ms-auto"></div>
+						</div>
+					</div>
+          <!-- For customer -->
+
+          <!-- For admin -->
+					<div *ngIf="this.currentUser['custom:role'] == 'admin'" class="menu-profile-info">
+						<div class="d-flex align-items-center">
+							<div class="flex-grow-1">
+								{{this.currentUser['custom:name']}}
+							</div>
+							<div class="menu-caret ms-auto"></div>
+						</div>
+						<small>( Admin )</small>
+					</div>
+          <!-- For customer -->
+
 				</a>
 			</div>
 			<div id="appSidebarProfileMenu" class="collapse" *ngIf="!appSettings.appSidebarSearch">

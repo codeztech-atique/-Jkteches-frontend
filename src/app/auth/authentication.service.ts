@@ -139,6 +139,7 @@ export class AuthenticationService implements OnInit  {
     signUpWithFB(token){
       const headers = new HttpHeaders({
         'provider': 'facebook', 
+        'deviceType': 'web'
       });
 
       return this.http.post<any>(`${this.uri}/auth/social/register`, token, {headers})
@@ -152,6 +153,18 @@ export class AuthenticationService implements OnInit  {
               localStorage.setItem('currentUser', JSON.stringify(getUserDetails));
               this.currentUserSubject.next(getUserDetails);
               location.reload();
+          }
+          return auser;
+      }));
+    }
+
+    changePassword(user) {
+      return this.http.post<any>(`${this.uri}/auth/changepassword`, user)
+      .pipe(map(auser => {
+          // login successful if there's a jwt token in the response
+          if (auser) {
+            // store user details and jwt token in local storage to keep user logged in between page refreshes
+            console.log("Password changed successfully !!!")
           }
           return auser;
       }));

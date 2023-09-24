@@ -186,7 +186,7 @@ import { SocialLoginModule, SocialAuthServiceConfig, FacebookLoginProvider, Goog
           {
             id: GoogleLoginProvider.PROVIDER_ID,
             provider: new GoogleLoginProvider(
-              '249461109105-88jaj51i99v1di3ibldqd1fq5pujim4l.apps.googleusercontent.com',
+              '455013575609-op5n3jm0snph2t2jlrtbv7uc38dbk5em.apps.googleusercontent.com',
               {
                 oneTapEnabled: false,
               }

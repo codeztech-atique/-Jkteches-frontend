@@ -30,4 +30,9 @@ export class SharedservicesService {
   public get currentUserValue(): Userdetails {
     return this.currentUserSubject.value;
   }
+
+  // Update profile details
+  public updateProfile(data) {
+    return this.http.put(`${this.uri}/user/update`, data);
+  }
 }

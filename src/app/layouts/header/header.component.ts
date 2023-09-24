@@ -51,7 +51,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
 	}
 
 	constructor(private route: ActivatedRoute, private authenticationService: AuthenticationService, private commonService: CommonService, private shared: SharedservicesService, private elementRef: ElementRef) {
-		this.logo = "../../../assets/img/logo/apple-icon.png"
+		this.logo = "../../../assets/img/logo/logo.png"
 		this.currentUserSubscription = this.authenticationService.currentUser.subscribe(async user => {
 			this.currentUser = user;
 			this.userProfilePictureURL = this.currentUser['custom:profileurl'];
