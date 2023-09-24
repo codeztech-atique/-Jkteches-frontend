@@ -16,6 +16,7 @@ export class ForgotPassword implements OnInit, OnDestroy {
   appSettings = appSettings;
   email: any;
   apiResponse: any;
+  apiResponseError: any;
   isDisabled: boolean;
   isInvalidEmail: boolean;
 
@@ -57,6 +58,7 @@ export class ForgotPassword implements OnInit, OnDestroy {
 
   forgotPassword() {
     const forgotPasswordHTML = <HTMLElement>document.getElementById('forgot-password');
+    const forgotPasswordHTMLError = <HTMLElement>document.getElementById('forgot-password-error');
     const userData = {
       email: this.email
     }
@@ -64,6 +66,9 @@ export class ForgotPassword implements OnInit, OnDestroy {
       // .pipe(first())
       .subscribe({
         error: (e) => {
+          // apiResponseError
+          this.apiResponseError = e;
+          forgotPasswordHTMLError.style.display = 'block';
           this.router.navigate(['/forgot-password']);
         },
         complete: () => {

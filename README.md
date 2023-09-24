@@ -13,8 +13,8 @@ npm install
 npm start
 
 # Website
-https://d2redesbcstiia.cloudfront.net/product/resources
-https://elanco.site
+https://d13qh3xlms4ps6.cloudfront.net - Cloudfront Distribution Endpoint
+https://jkteches.com
 
 # Steps to deploy
 npm run build
