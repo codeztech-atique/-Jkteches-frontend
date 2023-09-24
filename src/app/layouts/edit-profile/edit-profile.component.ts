@@ -59,13 +59,13 @@ export class EditProfile implements OnDestroy,OnInit {
 			this.userName = this.userInfo['custom:name'];
 		}
 
-		if(this.userInfo['custom:description']) {
-			this.userAboutMe = this.userInfo['custom:description'];
+		if(this.userInfo['custom:about']) {
+			this.userAboutMe = this.userInfo['custom:about'];
 			this.showAboutMe = false;
 		}
 
-		if(this.userInfo['custom:birthdate']) {
-			this.userBirthdate = this.userInfo['custom:birthdate'];
+		if(this.userInfo['custom:dob']) {
+			this.userBirthdate = this.userInfo['custom:dob'];
 			const userBirthDate = this.userBirthdate.split('/')
 			this.userBirthdateDay = userBirthDate[0];
 			this.userBirthdateMonth = userBirthDate[1];
@@ -167,6 +167,7 @@ export class EditProfile implements OnDestroy,OnInit {
 					showCancelButton: false,
 					allowOutsideClick: false,
 				});
+				this.updateProfile();
 		  	}
 		})
 	}
@@ -192,7 +193,7 @@ export class EditProfile implements OnDestroy,OnInit {
 		
 		const data = {
 			email: this.userInfo['email'],
-			description: this.userAboutMe,
+			about: this.userAboutMe,
 			dob: this.userBirthdate, 
 		}
 
@@ -201,7 +202,7 @@ export class EditProfile implements OnDestroy,OnInit {
 			  const responseData = JSON.parse(JSON.stringify(response));
 
               this.userInfo['custom:about'] = this.userAboutMe;
-			  this.userInfo['custom:birthdate'] = this.userBirthdate;
+			  this.userInfo['custom:dob'] = this.userBirthdate;
 			  
 			  localStorage.setItem('currentUser', JSON.stringify(this.userInfo));
 			 

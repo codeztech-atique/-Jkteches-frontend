@@ -3,6 +3,7 @@ import { Router }    from '@angular/router';
 import { NgForm }    from '@angular/forms';
 import appSettings from '../../../config/app-settings';
 import { Title } from '@angular/platform-browser';
+import { AuthenticationService } from '../../../auth/authentication.service';
 
 @Component({
 	selector: 'forgot-password',
@@ -14,10 +15,11 @@ export class ForgotPassword implements OnInit, OnDestroy {
   bg = '/assets/img/login-bg/login-bg-17.jpg';
   appSettings = appSettings;
   email: any;
+  apiResponse: any;
   isDisabled: boolean;
   isInvalidEmail: boolean;
 
-  constructor(private router: Router, private renderer: Renderer2, private titleService: Title) {
+  constructor(private router: Router, private renderer: Renderer2, private titleService: Title, private auth: AuthenticationService) {
     this.appSettings.appEmpty = true;
     this.isDisabled = true;
     this.renderer.addClass(document.body, 'bg-white');
@@ -51,5 +53,27 @@ export class ForgotPassword implements OnInit, OnDestroy {
         this.isDisabled = true;
       }
     }
+  }
+
+  forgotPassword() {
+    const userData = {
+      email: this.email
+    }
+    this.auth.forgotPassword(userData)
+      // .pipe(first())
+      .subscribe({
+        error: (e) => {
+          this.router.navigate(['/forgot-password']);
+        },
+        complete: () => {
+          console.log("Email successfully verify.");
+        },
+        next: (res) => {
+          
+          // Map and process the response as needed
+          const response = JSON.parse(JSON.stringify(res));
+          this.apiResponse = response.message;
+        }
+    })
   }
 }

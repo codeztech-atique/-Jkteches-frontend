@@ -47,6 +47,9 @@ export class AuthenticationService implements OnInit  {
               localStorage.setItem('currentUser', JSON.stringify(getUserDetails));
               this.currentUserSubject.next(getUserDetails);
               location.reload(); // Important line, Refresh page after login --- We have to refresh all the routes
+              setTimeout(() => {
+                location.reload();
+              }, 2000)
           }
           return auser;
       }));
@@ -69,6 +72,9 @@ export class AuthenticationService implements OnInit  {
               localStorage.setItem('currentUser', JSON.stringify(getUserDetails));
               this.currentUserSubject.next(getUserDetails);
               location.reload();
+              setTimeout(() => {
+                location.reload();
+              }, 2000)
           }
           return auser;
       }));
@@ -90,6 +96,9 @@ export class AuthenticationService implements OnInit  {
               localStorage.setItem('currentUser', JSON.stringify(getUserDetails));
               this.currentUserSubject.next(getUserDetails);
               location.reload();
+              setTimeout(() => {
+                location.reload();
+              }, 2000)
           }
           return auser;
       }));
@@ -108,7 +117,6 @@ export class AuthenticationService implements OnInit  {
               getUserDetails['id'] = auser.id;
               localStorage.setItem('currentUser', JSON.stringify(getUserDetails));
               this.currentUserSubject.next(getUserDetails);
-              // location.reload();  // Important line, Refresh page after login --- We have to refresh all the routes
           }
           return auser;
       }));
@@ -130,7 +138,10 @@ export class AuthenticationService implements OnInit  {
               getUserDetails['id'] = auser.id;
               localStorage.setItem('currentUser', JSON.stringify(getUserDetails));
               this.currentUserSubject.next(getUserDetails);
-              location.reload();
+              location.reload(); // Important line, Refresh page after login --- We have to refresh all the routes
+              setTimeout(() => {
+                location.reload();
+              }, 2000)
           }
           return auser;
       }));
@@ -152,7 +163,10 @@ export class AuthenticationService implements OnInit  {
               getUserDetails['id'] = auser.id;
               localStorage.setItem('currentUser', JSON.stringify(getUserDetails));
               this.currentUserSubject.next(getUserDetails);
-              location.reload();
+              location.reload(); // Important line, Refresh page after login --- We have to refresh all the routes
+              setTimeout(() => {
+                location.reload();
+              }, 2000)
           }
           return auser;
       }));
@@ -170,8 +184,32 @@ export class AuthenticationService implements OnInit  {
       }));
     }
 
-    public sharedUpdatedUserDetails(data) {
-      this.currentUserSubject.next(data);
+    verifyEmail(user) {
+      return this.http.post<any>(`${this.uri}/auth/verifyemail`, user)
+      .pipe(map(auser => {
+          // login successful if there's a jwt token in the response
+          if (auser) {
+            // store user details and jwt token in local storage to keep user logged in between page refreshes
+            console.log("Email verified successfully.")
+            location.reload(); // Important line, Refresh page after login --- We have to refresh all the routes
+            setTimeout(() => {
+              location.reload();
+            }, 2000)
+          }
+          return auser;
+      }));
+    }
+
+    forgotPassword(user) {
+      return this.http.post<any>(`${this.uri}/auth/forgotpassword`, user)
+      .pipe(map(auser => {
+          // login successful if there's a jwt token in the response
+          if (auser) {
+            // store user details and jwt token in local storage to keep user logged in between page refreshes
+            console.log("Forgot password link has sent to your email.");
+          }
+          return auser;
+      }));
     }
 
     logout() {
@@ -188,5 +226,9 @@ export class AuthenticationService implements OnInit  {
         setTimeout(() => {
           location.reload();
         }, 2000)
+    }
+
+    public sharedUpdatedUserDetails(data) {
+      this.currentUserSubject.next(data);
     }
 }

@@ -72,7 +72,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
 	ngOnDestroy() {
 		this.appSettings.appTopMenuMobileToggled = false;
 		this.appSettings.appHeaderMegaMenuMobileToggled = false;
-		this._subscription.unsubscribe();
+		// this._subscription.unsubscribe();
 	}
 	
 

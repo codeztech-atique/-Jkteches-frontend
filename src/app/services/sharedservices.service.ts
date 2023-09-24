@@ -33,6 +33,6 @@ export class SharedservicesService {
 
   // Update profile details
   public updateProfile(data) {
-    return this.http.put(`${this.uri}/user/update`, data);
+    return this.http.put(`${this.uri}/user/profile`, data);
   }
 }

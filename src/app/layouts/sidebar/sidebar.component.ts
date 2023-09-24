@@ -73,10 +73,6 @@ export class SidebarComponent implements AfterViewChecked {
 		});
 		
 
-		this.commonService._subjectProfile$.subscribe((profilePicURL) => {
-			this.userProfilePictureURL = profilePicURL;
-		});
-
 		if (window.innerWidth <= 767) {
 			this.mobileMode = true;
 			this.desktopMode = false;

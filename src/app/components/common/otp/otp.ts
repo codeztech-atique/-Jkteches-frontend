@@ -19,6 +19,7 @@ export class OtpPage implements OnInit {
   app;
   appSettings = appSettings;
   form: any;
+  digits: string[] = ['', '', '', ''];
   
 
   constructor(
@@ -43,8 +44,20 @@ export class OtpPage implements OnInit {
   }
 
   keyUpEvent(event, index) {
+    const inputValue = event.target.value;
+  
+    // Ensure that the input is a single digit
+    if (inputValue.length === 1 && /^\d$/.test(inputValue)) {
+      // Update the corresponding digit in the array
+      this.digits[index] = inputValue;
+    } else {
+      // Clear the digit if the input is not a single digit
+      this.digits[index] = '';
+    }
+    
+    // Handle navigation between input fields (left/right)
     let pos = index;
-    if (event.keyCode === 8 && event.which === 8) {
+    if (event.inputType === 'deleteContentBackward' || event.inputType === 'deleteContentForward') {
       pos = index - 1;
     } else {
       pos = index + 1;
@@ -55,8 +68,28 @@ export class OtpPage implements OnInit {
   }
 
   verifyLater() {
-    this.router.navigate(['/register']);
-    location.reload();
+    location.reload(); // Important line, Refresh page after login --- We have to refresh all the routes
+    setTimeout(() => {
+      location.reload();
+    }, 2000)
+  }
+
+  verifyNow() {
+    const userDetails = JSON.parse(localStorage.getItem('currentUser'));
+    const userData = {
+      email: userDetails['email'],
+      code: this.digits.join('')
+    }
+    this.auth.verifyEmail(userData)
+      // .pipe(first())
+      .subscribe({
+        error: (e) => {
+          this.router.navigate(['/otp']);
+        },
+        complete: () => {
+          console.log("Email successfully verify.")
+        }
+    })
   }
 
   ngOnDestroy() {
