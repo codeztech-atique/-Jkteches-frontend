@@ -19,12 +19,14 @@ export class ChangePassword implements OnInit, OnDestroy {
   confirmPassword : any;
   apiResponse: any;
   code: any;
+  confirmButtonText: any;
 
   isInvalidPassword = false;
   isInvalidConfirmPassword = false;
   isPasswordMatch = false;
 
   isDisabled: boolean;
+  showLoader: boolean;
 
   ngOnInit(): void {
     this.titleService.setTitle('JKteches | Change Password Page');
@@ -33,6 +35,8 @@ export class ChangePassword implements OnInit, OnDestroy {
   constructor(private router: Router, private route: ActivatedRoute, private renderer: Renderer2, private titleService: Title, private auth: AuthenticationService) {
     this.appSettings.appEmpty = true;
     this.isDisabled = true;
+    this.showLoader = false;
+    this.confirmButtonText = "Change Password";
     this.renderer.addClass(document.body, 'bg-white');
     this.route.queryParams.subscribe(params => {
       this.email = params['username'];
@@ -114,6 +118,8 @@ export class ChangePassword implements OnInit, OnDestroy {
 
   changePassword() {
     const changePasswordHTML = <HTMLElement>document.getElementById('change-password');
+    this.showLoader = true;
+    this.confirmButtonText = "Please wait";
     const userData = {
       email: this.email,
       password: this.password
@@ -124,6 +130,7 @@ export class ChangePassword implements OnInit, OnDestroy {
         error: (e) => {
           const response = JSON.parse(JSON.stringify(e));
           this.apiResponse = response.message;
+          this.showLoader = false;
           this.router.navigate(['/']);
         },
         complete: () => {
@@ -135,6 +142,7 @@ export class ChangePassword implements OnInit, OnDestroy {
           const response = JSON.parse(JSON.stringify(res));
           this.apiResponse = response.message;
           changePasswordHTML.style.display = 'block';
+          this.showLoader = false;
           setTimeout(() => {
             this.router.navigate(['/']);
           }, 3000)

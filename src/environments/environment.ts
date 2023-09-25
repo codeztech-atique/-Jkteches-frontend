@@ -7,7 +7,7 @@ export const environment = {
   production: false,
   produrl: 'https://4bjxyf7z29.execute-api.ap-south-1.amazonaws.com/production',
   localurl: 'http://localhost:8081',
-  url : 'https://4bjxyf7z29.execute-api.ap-south-1.amazonaws.com/production',
+  url : 'http://localhost:8081',
 
   linkedinClientId: '77mmjfsz45aw22',
   linkedinLoginRedirectUri: 'http://localhost:4200/',

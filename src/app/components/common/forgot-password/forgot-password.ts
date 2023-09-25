@@ -17,12 +17,16 @@ export class ForgotPassword implements OnInit, OnDestroy {
   email: any;
   apiResponse: any;
   apiResponseError: any;
+  confirmButtonText: any;
   isDisabled: boolean;
   isInvalidEmail: boolean;
+  showLoader: boolean;
 
   constructor(private router: Router, private renderer: Renderer2, private titleService: Title, private auth: AuthenticationService) {
     this.appSettings.appEmpty = true;
     this.isDisabled = true;
+    this.showLoader = false;
+    this.confirmButtonText = "Send Email";
     this.renderer.addClass(document.body, 'bg-white');
   }
   ngOnInit(): void {
@@ -57,6 +61,8 @@ export class ForgotPassword implements OnInit, OnDestroy {
   }
 
   forgotPassword() {
+    this.showLoader = true;
+    this.confirmButtonText = "Please wait";
     const forgotPasswordHTML = <HTMLElement>document.getElementById('forgot-password');
     const forgotPasswordHTMLError = <HTMLElement>document.getElementById('forgot-password-error');
     const userData = {
@@ -69,6 +75,8 @@ export class ForgotPassword implements OnInit, OnDestroy {
           // apiResponseError
           this.apiResponseError = e;
           forgotPasswordHTMLError.style.display = 'block';
+          this.confirmButtonText = "Send Email";
+          this.showLoader = false;
           this.router.navigate(['/forgot-password']);
         },
         complete: () => {
@@ -80,6 +88,8 @@ export class ForgotPassword implements OnInit, OnDestroy {
           const response = JSON.parse(JSON.stringify(res));
           this.apiResponse = response.message;
           forgotPasswordHTML.style.display = 'block';
+          this.confirmButtonText = "Send Email";
+          this.showLoader = false;
         }
     })
   }
